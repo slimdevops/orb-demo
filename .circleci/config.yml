@@ -1,33 +1,73 @@
 version: 2.1
 
 orbs:
-  slim-ai-test-orb: slimdevops/slim-ai-test-orb@0.0.1
-
+  docker: circleci/docker@1.5.0
+  slim-ai-test-orb: slimdevops/slim-ai-test-orb@0.0.2
+parameters:
+  image-name:
+    description: Image to be scanned.
+    type: string
+    default: node-example
+  image-namespace:
+    description: Namespace of the image.
+    type: string
+    default: sreejithfocaloid #Namespace of the image to be scanned eg:node
+  image-tag:
+    description: Version of the image.
+    type: string
+    default: latest #Version of the image to be scanned eg:latest
+  image-connector:
+    description: Connector.
+    type: string
+    default: dockerhub.public #Connector used by slim to get the image eg:dockerhub.public
+  cimg-tag:
+    description: Which tag to be used for cimg/base.
+    type: string
+    default: current #Which tag to be used for cimg eg:  cimg/base:current
+executors:
+  docker-publisher: 
+    environment:
+      IMAGE_NAME: << pipeline.parameters.image-namespace >>/<< pipeline.parameters.image-name >>
+    docker: # Each job requires specifying an executor
+    # (either docker, macos, or machine), see
+      - image: cimg/base:<< pipeline.parameters.cimg-tag >>
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
 jobs:
+  publishLatestToHub: 
+    executor: docker-publisher
+ 
+    steps: 
+      - checkout
+      - setup_remote_docker
+      - run: 
+          name: Publish Docker Image to Docker Hub
+          command: |
+            echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker build -t << pipeline.parameters.image-namespace >>/<< pipeline.parameters.image-name >>:<< pipeline.parameters.image-tag >> .
+            docker push << pipeline.parameters.image-namespace >>/<< pipeline.parameters.image-name >>:<< pipeline.parameters.image-tag >>
   scan:
     docker:
       - image: cimg/base:<< parameters.cimg-tag >>
-    parameters:
-      image-name:
-        description: Image to be scanned.
-        type: string
-        default: nginx
-      cimg-tag:
-        description: Which tag to be used for cimg/base.
-        type: string
-        default: current #Which tag to be used for cimg eg:  cimg/base:current
     steps:
       - checkout
       # Run your orb's commands to validate them.
       - slim-ai-test-orb/xray:
-          imageName: << parameters.image-name >>
-          cimgTag: << parameters.cimg-tag >>
+          imageName: << pipeline.parameters.image-name >>
+          imageNamespace: << pipeline.parameters.image-namespace >>
+          imageTag: << pipeline.parameters.image-tag >>
+          imageConnector: << pipeline.parameters.image-connector >>
+          cimgTag: << pipeline.parameters.cimg-tag >>
       - store_artifacts:
           path: /tmp/artifact-xray
           destination: xray-json
       - slim-ai-test-orb/vscan:
-          imageName: << parameters.image-name >>
-          cimgTag: << parameters.cimg-tag >>
+          imageName: << pipeline.parameters.image-name >>
+          imageNamespace: << pipeline.parameters.image-namespace >>
+          imageTag: << pipeline.parameters.image-tag >>
+          imageConnector: << pipeline.parameters.image-connector >>
+          cimgTag: << pipeline.parameters.cimg-tag >>
       - store_artifacts:
           path: /tmp/artifact-vscan
           destination: vscan-json
@@ -35,4 +75,7 @@ workflows:
   engine-execution:
     jobs:
       # Make sure to include "filters: *filters" in every test job you want to run as part of your deployment.
-      - scan
+      - publishLatestToHub
+      - scan:
+          requires:
+            - publishLatestToHub
