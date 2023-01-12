@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   docker: circleci/docker@1.5.0
-  slim-ai-test-orb: slimdevops/slim-ai-test-orb@0.0.5
+  slim-ai-test-orb: slimdevops/slim-ai-test-orb@0.0.6
 parameters:
   image-name:
     description: Image to be scanned.
