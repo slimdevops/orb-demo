@@ -8,7 +8,7 @@ parameters:
     description: Image to be scanned.
     type: string
     default: sreejithfocaloid/node-example:latest
-    image-connector:
+  image-connector:
     description: Connector.
     type: string
     default: dockerhub.public #Connector used by slim to get the image eg:dockerhub.public
