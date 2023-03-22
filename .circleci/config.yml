@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   docker: circleci/docker@1.5.0
-  slim-ai-test-orb: slimdevops/slim-ai-test-orb@0.0.17
+  slim-ai-test-orb: slimdevops/slim-ai-test-orb@0.0.19
 parameters:
   image-name:
     description: Image to be scanned.
@@ -48,14 +48,12 @@ jobs:
       - slim-ai-test-orb/xray:
           imageName: << pipeline.parameters.image-name >>
           imageConnector: << pipeline.parameters.image-connector >>
-          cimgTag: << pipeline.parameters.cimg-tag >>
       - store_artifacts:
           path: /tmp/artifact-xray
           destination: xray-json
       - slim-ai-test-orb/vscan:
           imageName: << pipeline.parameters.image-name >>
           imageConnector: << pipeline.parameters.image-connector >>
-          cimgTag: << pipeline.parameters.cimg-tag >>
       - store_artifacts:
           path: /tmp/artifact-vscan
           destination: vscan-json
