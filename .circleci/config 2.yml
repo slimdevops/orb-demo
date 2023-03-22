@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   docker: circleci/docker@1.5.0
-  slim-ai-test-orb: slimdevops/slim-ai-test-orb@0.0.21
+  slim-ai-test-orb: slimdevops/slim-ai-test-orb@0.0.20
 parameters:
   image-name:
     description: Image to be scanned.
@@ -65,10 +65,15 @@ workflows:
     jobs:
       # Make sure to include "filters: *filters" in every test job you want to run as part of your deployment.
       - publishLatestToHub
-      - slim-ai-test-orb/scan:
+      - slim-ai-test-orb/xray:
           imageName: << pipeline.parameters.image-name >>
           imageConnector: << pipeline.parameters.image-connector >>
           cimgTag: << pipeline.parameters.cimg-tag >>
           requires:
             - publishLatestToHub
-      
+      - slim-ai-test-orb/vscan:
+          imageName: << pipeline.parameters.image-name >>
+          imageConnector: << pipeline.parameters.image-connector >>
+          cimgTag: << pipeline.parameters.cimg-tag >>
+          requires:
+            - publishLatestToHub
