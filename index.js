@@ -3,7 +3,7 @@ const http = require('http');
 console.log("Starting Server");
 const requestListener = function (req, res) {
   res.writeHead(200);
-  res.end('Hello, World!');
+  res.end('Hello from Slim.AI!');
 }
 
 const server = http.createServer(requestListener);
