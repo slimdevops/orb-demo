@@ -1,7 +1,6 @@
 version: 2.1
 
 orbs:
-  docker: circleci/docker@1.5.0
   slim-ai-test-orb: slimdevops/slim-scanner@0.0.4
 parameters:
   image-name:
