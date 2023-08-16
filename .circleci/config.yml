@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  slim-ai-test-orb: slimdevops/slim-ai-test-orb@0.0.22
+  slim-ai-test-orb: slimdevops/slim-scanner@0.0.5
 parameters:
   image-name:
     description: Image to be scanned.
