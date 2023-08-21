@@ -4,6 +4,8 @@ CircleCI Orb Demo Project to demonstrate configuration with a Node.JS project wi
 # Setting up CircleCI Slim.AI Orb
 Slim.AI has a public CircleCI Orb that's configurable for your Node.JS project with a Docker Container. This Orb conducts vulnerability scans, creates container profiles, and generates reports, allowing you to seamlessly access these artifacts from the CircleCI pipeline. As your project grows and scales, all these images and their associated data are available on the Slim platform for comprehensive analysis over time.
 
+[Blog: Node.JS Example](https://www.slim.ai/blog/introducing-slim-s-scanner-orb-for-circleci)
+
 ## Project Environment Variables
 Your Node.JS project will need the following environment variables:
 ```
