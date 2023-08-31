@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  slim-ai-test-orb: slimdevops/slim-scanner@0.0.5
+  slim-scanner: slimdevops/slim-scanner@0.0.6
 parameters:
   image-name:
     description: Image to be scanned.
@@ -40,7 +40,7 @@ workflows:
     jobs:
       # Make sure to include "filters: *filters" in every test job you want to run as part of your deployment.
       - publishLatestToHub
-      - slim-ai-test-orb/scan:
+      - slim-scanner/scan:
           name: Slim Container Scanning
           imageName: << pipeline.parameters.image-name >>
           cimgTag: << pipeline.parameters.cimg-tag >>
