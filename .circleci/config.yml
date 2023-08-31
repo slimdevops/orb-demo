@@ -6,7 +6,7 @@ parameters:
   image-name:
     description: Image to be scanned.
     type: string
-    default: sreejithfocaloid/node-example:latest
+    default: slimpsv/node-example:latest
   cimg-tag:
     description: Which tag to be used for cimg/base.
     type: string
